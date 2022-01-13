@@ -6,3 +6,19 @@
 //
 
 import Foundation
+
+struct CustomNumberFormatter {
+  static var numberFormatter: NumberFormatter {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    
+    return formatter
+  }
+  
+  static func formatNumber(number: Int) -> String? {
+    let result = numberFormatter.string(for: number)
+    
+    return result
+  }
+}
+

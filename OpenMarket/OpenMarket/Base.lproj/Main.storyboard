@@ -57,6 +57,9 @@
                                 <segment title="First"/>
                                 <segment title="Second"/>
                             </segments>
+                            <connections>
+                                <action selector="segmentControlDidTap:" destination="BYZ-38-t0r" eventType="valueChanged" id="PfQ-S5-jf8"/>
+                            </connections>
                         </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="LTF-EP-78w"/>
                     </navigationItem>

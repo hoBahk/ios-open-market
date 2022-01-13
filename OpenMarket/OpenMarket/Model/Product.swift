@@ -11,6 +11,7 @@ enum Currency: String, Codable {
   case KRW
   case USD
 }
+extension Currency: Hashable { }
 
 /**
  상품 정보의 모델타입입니다.
@@ -41,22 +42,6 @@ struct Product: Codable {
   let createdAt: String
   let issuedAt: String
   
-  var getBargainPrice: String {
-    return "\(currency.rawValue) \(bargainPrice)"
-  }
-  
-  var getPrice: String {
-    
-    return "\(currency.rawValue) \(bargainPrice)\n\(currency.rawValue) \(price)"
-  }
-  
-  var getStock: String {
-    if stock == 0 {
-      return "품절"
-    }
-    return "잔여수량: \(stock)"
-  }
-  
   enum CodingKeys: String, CodingKey {
     case id, name, thumbnail, currency, price, stock, images
     case vendor = "vendors"
@@ -66,5 +51,43 @@ struct Product: Codable {
     case createdAt = "created_at"
     case issuedAt = "issued_at"
   }
+  
+  var fixedPrice: String {
+    guard let formattedPrice = CustomNumberFormatter.formatNumber(number: price) else {
+      return ""
+    }
+    return "\(currency.rawValue) \(formattedPrice)"
+  }
+  
+  var getBargainPrice: String {
+    guard let formattedBargainPrice = CustomNumberFormatter.formatNumber(number: bargainPrice) else {
+      return ""
+    }
+    return "\(currency.rawValue) \(formattedBargainPrice)"
+  }
+  
+  var getPriceForList: String {
+    if discountedPrice == 0 {
+      return fixedPrice
+    }
+    
+    return "\(fixedPrice) \(getBargainPrice)"
+  }
+  
+  var getPriceForGrid: String {
+    if discountedPrice == 0 {
+      return fixedPrice
+    }
+
+    return "\(fixedPrice)\n\(getBargainPrice)"
+  }
+  
+  var getStock: String {
+    if stock == 0 {
+      return "품절"
+    }
+    return "잔여수량: \(stock)"
+  }
 }
 
+extension Product: Hashable { }

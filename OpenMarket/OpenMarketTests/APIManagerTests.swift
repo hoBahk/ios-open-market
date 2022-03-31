@@ -22,7 +22,7 @@ class APIManagerTests: XCTestCase {
     sutURL = URL(string: "testURL")
     sutSession = MockSession.session
     realSession = URLSession(configuration: .default)
-    sutAPIManager = APIManager(urlSession: realSession, jsonParser: JSONParser())
+    sutAPIManager = APIManager(urlSession: sutSession, jsonParser: JSONParser())
     identifier = "3be89f18-7200-11ec-abfa-25c2d8a6d606"
   }
   

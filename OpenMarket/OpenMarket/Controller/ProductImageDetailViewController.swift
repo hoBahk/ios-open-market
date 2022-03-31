@@ -101,7 +101,7 @@ class ProductImageDetailViewController: UIViewController, ReuseIdentifying {
   
   func setUpScrollView(imageCount: Int) {
     scrollView.contentSize = CGSize(
-      width: 	UIScreen.main.bounds.width * CGFloat(imageCount),
+      width: UIScreen.main.bounds.width * CGFloat(imageCount),
       height: UIScreen.main.bounds.width
     )
   }

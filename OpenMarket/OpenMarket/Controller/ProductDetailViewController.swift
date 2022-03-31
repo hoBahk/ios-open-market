@@ -25,7 +25,6 @@ class ProductDetailViewController: UIViewController, ReuseIdentifying, Delegate 
   var vc: ProductRegistrationModificationViewController?
   private let api = APIManager(urlSession: URLSession(configuration: .default), jsonParser: JSONParser())
   var product: Product?
-  //var productId: Int?
   private var productImages: [UIImage] = []
   
   private let identifier = "3be89f18-7200-11ec-abfa-25c2d8a6d606"

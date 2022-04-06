@@ -1,6 +1,7 @@
 ### 🏬 오픈 마켓
 프로젝트 기간: 2022.01.03 ~ 2022.01.28
 
+<br>
     
 ## 🗂 목차
 
@@ -10,6 +11,8 @@
 - [🤔 고민한 점](#-고민한-점)
 - [⌨️ 키워드](#-키워드)
 
+<br>
+
 ## 📱 구현 화면
 | 상품 화면( 리스트) | 상품 화면 (그리드) | 상품 상세 화면 |
 | :---: | :---: | :---: |
@@ -17,8 +20,9 @@
 | 상품 추가 화면 | 상품 추가 화면 | 이미지 상세 화면 | 
 | ![image](https://user-images.githubusercontent.com/90945013/162007799-2dacaaaa-88a9-46b1-831b-bb28b175070e.png) | ![image](https://user-images.githubusercontent.com/90945013/162007743-ecf202b5-19da-49c9-8d0a-65cfbc6bdabc.png) | ![image](https://user-images.githubusercontent.com/90945013/162008172-b94dcd35-3752-402f-b609-387a75d279e1.png) |
 
-## 📃 구현 내용
+<br>
 
+## 📃 구현 내용
 ### View
 - 처음 목록을 로드할 때, 사용자에게 로드중임을 알 수 있도록 Indicator 사용
 - Segmented Control을 활용하여 List 형태와 Grid형태 두 가지를 선택할 수 있도록 구현
@@ -45,6 +49,8 @@
 - 한번에 필요한 데이터만 가져올 수 있도록 Pagination을 구현
 - 이미지 캐싱을 통해 이미지 로드의 성능을 높힘
 - 서버에 업로드를 할 때 이미지를 resizing 하여 크기를 300KB 이하로 제한하도록 구현
+
+<br>
 
 ## 🚀 Trouble Shooting
 
@@ -285,6 +291,7 @@ class LoadingIndicator {
 DataSouce를 통해 정보를 보여주는 과정에서 List뷰셀과 Grid뷰셀의 타입이 다르지만  모양만 다를뿐 필요한 정보는 같았다. 그래서 공통된 것들을 프로토콜로 추상화 하여 하나의 타입으로 사용할 수 있도록 하였다.
 그래서 하나의 DataSouce 관련한 메서드로 관리할 수 있게 구현했다.
 
+<br>
 
 ## ⌨️  키워드
 - `JSON`

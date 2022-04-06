@@ -1,73 +1,23 @@
 ### 🏬 오픈 마켓
+프로젝트 기간: 2022.01.03 ~ 2022.01.28
 
-1. 프로젝트 기간: 2022.01.03 ~ 2022.01.28
-2. Ground Rules
-    - 진행 계획
-        - 프로젝트가 중심이 아닌 학습과 이유에 초점을 맞추기
-        - 의문점을 그냥 넘어가지 않기
-3. 커밋 규칙
-    - 단위
-        - 기능 단위
-    - 메세지
-        - 카르마 스타일
- 4. 코드 컨벤션  
-    - 함수와 함수사이 개행
-    - import하고 개행
-    - 한 줄 최대 컬럼 99칸
-    - 들여쓰기 2칸
-    - 세부적인건 진행 중 논의
-
-        
+    
 ## 🗂 목차
 
+- [📱 구현 화면] (#-구현-화면)
+- [📃 구현내용](#-구현-내용)
+- [🚀 Trouble Shooting](#-Trouble-Shooting)
+- [🤔 고민한 점](#-고민한-점)
 - [⌨️ 키워드](#-키워드)
-- [구현내용](#구현-내용)
-- [고민한 점](#고민한-점)
-- [Trouble Shooting](#Trouble-Shooting)
 
+## 📱 구현 화면
+| 상품 화면( 리스트) | 상품 화면 (그리드) | 상품 상세 화면 |
+| :---: | :---: | :---: |
+|![image](https://user-images.githubusercontent.com/90945013/162007196-fdb33d8c-93ae-49a0-b13c-89dd4310a9ad.png)| ![image](https://user-images.githubusercontent.com/90945013/162007463-4e4683f8-55b9-4efd-a48d-eb3e55715df4.png)  |  ![image](https://user-images.githubusercontent.com/90945013/162007379-296a523f-a95e-4aa4-9726-1117e383df9a.png) |
+| 상품 추가 화면 | 상품 추가 화면 | 이미지 상세 화면 | 
+| ![image](https://user-images.githubusercontent.com/90945013/162007799-2dacaaaa-88a9-46b1-831b-bb28b175070e.png) | ![image](https://user-images.githubusercontent.com/90945013/162007743-ecf202b5-19da-49c9-8d0a-65cfbc6bdabc.png) | ![image](https://user-images.githubusercontent.com/90945013/162008172-b94dcd35-3752-402f-b609-387a75d279e1.png) |
 
-## ⌨️  키워드
-- `JSON`
-	- `Encodable`, `Decodable`
-- `URL Session`
-	- `Multipart-form`, `POST`, `GET`, `PATCH`,`DELETE`
-- `API`
-- `CodingKeys`
-- `Unit Test`
-	- `URLProtocol`, `XCTestExpectation`
-- `Safe Area`
-- `UIScrollView`
-- `Collection View`
-	- `Mordern Collection View`, `CollectionView Delegate`
--` UICollectionViewDiffableDataSource`
-- `Local Cache`
-	- `NSCache`
-- `Auto Layout`
-- `Protocol`
-- `Keyboard Type`
-- `UIAlertController`
-	- `ActionSheet`, `Alert`
-- `UIImagePickerController`
-- `Segmented Control`
-- `Xib`
-- `UIActivityIndicatorView`
-- `NSAttributedString`
-- `Image resizing`
-- `TextField`
-	- `TextFieldDelegate`
-- `TextView`
-	- `TextViewDelegate`
-- `Delegate`
-- `NumberFormatter`
-- `reuseIdentifier`
-- `Gesture`
-	- `PanGesture`, `PinchGesture`
-- `UIPageControl`
-- `pagination`
-- `Error Handling`
-
-
-## 구현 내용
+## 📃 구현내용
 
 ### View
 - 처음 목록을 로드할 때, 사용자에게 로드중임을 알 수 있도록 Indicator 사용
@@ -96,7 +46,121 @@
 - 이미지 캐싱을 통해 이미지 로드의 성능을 높힘
 - 서버에 업로드를 할 때 이미지를 resizing 하여 크기를 300KB 이하로 제한하도록 구현
 
-## 고민한 점
+## 🚀 Trouble Shooting
+
+### 1. 스크롤을 내릴 때 마다 상품목록을 계속 가져오지 않는다.
+#### 문제점
+상품 목록 화면에서 처음에 상품들이 보이고 스크롤을 내려도 정해진 20개의 상품만이 보이고 더 이상 보이지 않았다.
+
+#### 원인
+스크롤을 내릴 때마다 서버에 등록된 상품을 더 가져오도록 하지 않았다.
+
+#### 해결방안
+서버 API에 상품 정보를 몇개씩 가져올 수 있도록 하는 옵션이 있어 한 번에 20개씩 가져올 수 있도록 수정하였다.
+그리고 CollectionViewDelegate의 willDisplay메서드를 사용하여 스크롤을 내릴 때마다 서버에 등록된 상품을 한 페이지(20개)씩 append 하도록 코드를 수정하였다.
+
+```swift
+func collectionView(
+  _ collectionView: UICollectionView,
+  willDisplay cell: UICollectionViewCell,
+  forItemAt indexPath: IndexPath
+) {
+  if products.count - 1 == indexPath.item, productsPage?.hasNext == true {
+    currentPage += 1
+    fetchProducts(pageNumber: currentPage, cellType: currentCellType())
+  }
+}
+```
+### 2. LIST와 GRID로 서로 전환할 때 약간의 딜레이가 발생
+
+#### 문제점
+LIST와 GRID로 전환할 수 있도록 Segment Control을 사용하였다.
+그런데 전환할 때마다 약간의 딜레이가 발생하는 문제를 발견했다.
+
+#### 원인
+이미지를 URL을 통해 가져오는 Data(contentsOf:) 메서드를 사용하여 가져오고 있어서 이미지를 비동기로 가져오지 않고 동기로 가져오고 있지 않아 이미지를 다 불러온 후에 뷰를 띄워주도록 되어 있었다.
+
+![](https://user-images.githubusercontent.com/69730931/149663537-dbefb6a5-8cb8-4a25-9e8d-213b2e385bd5.png)
+
+#### 해결방안
+아래의 메서드를 사용하여 이미지를 비동기로 가져오도록 메서드를 추가 했다.
+
+```swift 
+func requestProductImage(
+  url: String,
+  completion: @escaping (Result<Data, NetworkError>) -> Void
+) {
+  guard let imageUrl = URL(string: url) else {
+    return
+  }
+  let request = URLRequest(url: imageUrl)
+  let dataTask = urlSession.dataTask(request) { response in
+    switch response {
+    case .success(let data):
+      completion(.success(data))
+    case .failure(let error):
+      completion(.failure(error))
+    }
+  }
+  dataTask.resume()
+}
+```
+
+
+### 3. 이미지가 빠르게 보여지지 않는 문제
+
+#### 문제점
+이미지를 비동기로 가져오도록 수정했음에도 상품 목록 화면에서 스크롤을 빠르게 내리면 이미지를 원하는 만큼 빠르게 가져오지 못하는 현상
+
+#### 원인
+이미지의 용량이 커 네트워크를 통해 가져오는데에 시간이 오래 걸렸다.
+
+#### 해결방안
+용량이 큰 이미지의 경우 메모리 로컬 캐싱을 통해 로컬 캐시에 이미지를 저장하여 이미지를 가져올 때 캐시에 저장된 이미지를 먼저 가져오도록 하고 캐시에 이미지가 없을 때 서버에서 이미지를 가져오도록 구현한다.
+
+캐시를 싱글톤으로 구현하여 어디서든 접근할 수 있도록 구현하였다.
+
+```swfit
+class ImageCacheManager {
+    static let shared = NSCache<NSString, UIImage>()
+    private init() {}
+}
+```
+
+UIImageView의 extension으로 메서드를 구현하였다.   
+- 캐시에 저장된 이미지를 먼저 가져오도록 하고 캐시에 이미지가 없을 때 서버에서 이미지를 가져오도록 구현
+
+
+```swift
+extension UIImageView {
+  func setImage(url: String) {
+    let api = APIManager(urlSession: URLSession(configuration: .default), jsonParser: JSONParser())
+    
+    let cacheKey = NSString(string: url)
+    if let cacheImage = ImageCacheManager.shared.object(forKey: cacheKey) {
+      self.image = cacheImage
+      return
+    }
+    
+    api.requestProductImage(url: url) { [weak self] response in
+      switch response {
+      case .success(let data):
+        guard let image = UIImage(data: data) else {
+          return
+        }
+        ImageCacheManager.shared.setObject(image, forKey: cacheKey)
+        DispatchQueue.main.async {
+          self?.image = image
+        }
+      case .failure(let error):
+        print(error)
+      }
+    }
+  }
+}
+```
+
+## 🤔 고민한 점
 
 ### 1. JSON 파싱에 대한 객체 생성
 이번 프로젝트에서는 JSON관련 Encoding, Decoding이 빈번히 사용된다고 분석했다.    
@@ -222,116 +286,42 @@ DataSouce를 통해 정보를 보여주는 과정에서 List뷰셀과 Grid뷰셀
 그래서 하나의 DataSouce 관련한 메서드로 관리할 수 있게 구현했다.
 
 
-## Trouble Shooting
-
-### 1. 스크롤을 내릴 때 마다 상품목록을 계속 가져오지 않는다.
-#### 문제점
-상품 목록 화면에서 처음에 상품들이 보이고 스크롤을 내려도 정해진 20개의 상품만이 보이고 더 이상 보이지 않았다.
-
-#### 원인
-스크롤을 내릴 때마다 서버에 등록된 상품을 더 가져오도록 하지 않았다.
-
-#### 해결방안
-서버 API에 상품 정보를 몇개씩 가져올 수 있도록 하는 옵션이 있어 한 번에 20개씩 가져올 수 있도록 수정하였다.
-그리고 CollectionViewDelegate의 willDisplay메서드를 사용하여 스크롤을 내릴 때마다 서버에 등록된 상품을 한 페이지(20개)씩 append 하도록 코드를 수정하였다.
-
-```swift
-func collectionView(
-  _ collectionView: UICollectionView,
-  willDisplay cell: UICollectionViewCell,
-  forItemAt indexPath: IndexPath
-) {
-  if products.count - 1 == indexPath.item, productsPage?.hasNext == true {
-    currentPage += 1
-    fetchProducts(pageNumber: currentPage, cellType: currentCellType())
-  }
-}
-```
-### 2. LIST와 GRID로 서로 전환할 때 약간의 딜레이가 발생
-
-#### 문제점
-LIST와 GRID로 전환할 수 있도록 Segment Control을 사용하였다.
-그런데 전환할 때마다 약간의 딜레이가 발생하는 문제를 발견했다.
-
-#### 원인
-이미지를 URL을 통해 가져오는 Data(contentsOf:) 메서드를 사용하여 가져오고 있어서 이미지를 비동기로 가져오지 않고 동기로 가져오고 있지 않아 이미지를 다 불러온 후에 뷰를 띄워주도록 되어 있었다.
-
-![](https://user-images.githubusercontent.com/69730931/149663537-dbefb6a5-8cb8-4a25-9e8d-213b2e385bd5.png)
-
-#### 해결방안
-아래의 메서드를 사용하여 이미지를 비동기로 가져오도록 메서드를 추가 했다.
-
-```swift 
-func requestProductImage(
-  url: String,
-  completion: @escaping (Result<Data, NetworkError>) -> Void
-) {
-  guard let imageUrl = URL(string: url) else {
-    return
-  }
-  let request = URLRequest(url: imageUrl)
-  let dataTask = urlSession.dataTask(request) { response in
-    switch response {
-    case .success(let data):
-      completion(.success(data))
-    case .failure(let error):
-      completion(.failure(error))
-    }
-  }
-  dataTask.resume()
-}
-```
-
-
-### 3. 이미지가 빠르게 보여지지 않는 문제
-
-#### 문제점
-이미지를 비동기로 가져오도록 수정했음에도 상품 목록 화면에서 스크롤을 빠르게 내리면 이미지를 원하는 만큼 빠르게 가져오지 못하는 현상
-
-#### 원인
-이미지의 용량이 커 네트워크를 통해 가져오는데에 시간이 오래 걸렸다.
-
-#### 해결방안
-용량이 큰 이미지의 경우 메모리 로컬 캐싱을 통해 로컬 캐시에 이미지를 저장하여 이미지를 가져올 때 캐시에 저장된 이미지를 먼저 가져오도록 하고 캐시에 이미지가 없을 때 서버에서 이미지를 가져오도록 구현한다.
-
-캐시를 싱글톤으로 구현하여 어디서든 접근할 수 있도록 구현하였다.
-
-```swfit
-class ImageCacheManager {
-    static let shared = NSCache<NSString, UIImage>()
-    private init() {}
-}
-```
-
-UIImageView의 extension으로 메서드를 구현하였다.   
-- 캐시에 저장된 이미지를 먼저 가져오도록 하고 캐시에 이미지가 없을 때 서버에서 이미지를 가져오도록 구현
-
-
-```swift
-extension UIImageView {
-  func setImage(url: String) {
-    let api = APIManager(urlSession: URLSession(configuration: .default), jsonParser: JSONParser())
-    
-    let cacheKey = NSString(string: url)
-    if let cacheImage = ImageCacheManager.shared.object(forKey: cacheKey) {
-      self.image = cacheImage
-      return
-    }
-    
-    api.requestProductImage(url: url) { [weak self] response in
-      switch response {
-      case .success(let data):
-        guard let image = UIImage(data: data) else {
-          return
-        }
-        ImageCacheManager.shared.setObject(image, forKey: cacheKey)
-        DispatchQueue.main.async {
-          self?.image = image
-        }
-      case .failure(let error):
-        print(error)
-      }
-    }
-  }
-}
-```
+## ⌨️  키워드
+- `JSON`
+	- `Encodable`, `Decodable`
+- `URL Session`
+	- `Multipart-form`, `POST`, `GET`, `PATCH`,`DELETE`
+- `API`
+- `CodingKeys`
+- `Unit Test`
+	- `URLProtocol`, `XCTestExpectation`
+- `Safe Area`
+- `UIScrollView`
+- `Collection View`
+	- `Mordern Collection View`, `CollectionView Delegate`
+-` UICollectionViewDiffableDataSource`
+- `Local Cache`
+	- `NSCache`
+- `Auto Layout`
+- `Protocol`
+- `Keyboard Type`
+- `UIAlertController`
+	- `ActionSheet`, `Alert`
+- `UIImagePickerController`
+- `Segmented Control`
+- `Xib`
+- `UIActivityIndicatorView`
+- `NSAttributedString`
+- `Image resizing`
+- `TextField`
+	- `TextFieldDelegate`
+- `TextView`
+	- `TextViewDelegate`
+- `Delegate`
+- `NumberFormatter`
+- `reuseIdentifier`
+- `Gesture`
+	- `PanGesture`, `PinchGesture`
+- `UIPageControl`
+- `pagination`
+- `Error Handling`

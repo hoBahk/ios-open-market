@@ -189,8 +189,8 @@ URLsession.dataTask메서드는 비동기 방식 이기 때문에 escaping 클�
 2번의 단점은 throw 형식의 함수는 throws 키워드가 어떤 Error를 던질것인지 특정하지 않는다.  do - catch 문에서는 더 알기가 어렵다.   
 하지만 Result 타입을 쓰게 되면 던질 때 어떠한 오류인지 Error형식이 특정되어 보기가 쉽다. 그래서 성공과 실패가 더 명확해져 가독성 측면에서 더 좋다고 생각하여 Result를 통해 에러처리를 하였다.
 
-### 5. CondingKeys (feat. 네이밍)
-API의 프로퍼티와 해당 앱의 프로퍼티가 간단하게 camelCase와 snake_case를 오가는것이라면 JSONDecoder, JSONEncoder의 keyDecodingStrategy, keyEncodingStrategy로 해결할 수 있지만 API의 네이밍을 그래도 camelCase로 가져오게 된다면 [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)에서 지향하는 네이밍에 맞지 않아 CodingKeys 프로토콜을 사용하여 네이밍을 바꾸었다.
+### 5. CondingKey (feat. 네이밍)
+API의 프로퍼티와 해당 앱의 프로퍼티가 간단하게 camelCase와 snake_case를 오가는것이라면 JSONDecoder, JSONEncoder의 keyDecodingStrategy, keyEncodingStrategy로 해결할 수 있지만 API의 네이밍을 그래도 camelCase로 가져오게 된다면 [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)에서 지향하는 네이밍에 맞지 않아 CodingKey 프로토콜을 사용하여 네이밍을 바꾸었다.
 
 ### 6. 네트워크를 사용하는 기능에 대한 Unit Test
 네트워크를 사용하는 기능에 대한 테스트는 네트워크의 상태에 따른 결과(성공, 실패)에 따라 달라질 수 있고 테스트 하는 과정에서 실제 서버에 접근하는 것은 위험하다고 판단이 들었다.

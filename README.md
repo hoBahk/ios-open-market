@@ -1,4 +1,4 @@
-### 🏬 오픈 마켓
+## 🏬 오픈 마켓
 프로젝트 기간: 2022.01.03 ~ 2022.01.28
 
 <br>
@@ -17,7 +17,7 @@
 | 상품 화면( 리스트) | 상품 화면 (그리드) | 상품 상세 화면 |
 | :---: | :---: | :---: |
 |![image](https://user-images.githubusercontent.com/90945013/162007196-fdb33d8c-93ae-49a0-b13c-89dd4310a9ad.png)| ![image](https://user-images.githubusercontent.com/90945013/162007463-4e4683f8-55b9-4efd-a48d-eb3e55715df4.png)  |  ![image](https://user-images.githubusercontent.com/90945013/162007379-296a523f-a95e-4aa4-9726-1117e383df9a.png) |
-| 상품 추가 화면 | 상품 추가 화면 | 이미지 상세 화면 | 
+| **상품 추가 화면** | **상품 수정 화면** | **이미지 상세 화면** | 
 | ![image](https://user-images.githubusercontent.com/90945013/162007799-2dacaaaa-88a9-46b1-831b-bb28b175070e.png) | ![image](https://user-images.githubusercontent.com/90945013/162007743-ecf202b5-19da-49c9-8d0a-65cfbc6bdabc.png) | ![image](https://user-images.githubusercontent.com/90945013/162008172-b94dcd35-3752-402f-b609-387a75d279e1.png) |
 
 <br>

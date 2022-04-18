@@ -126,7 +126,7 @@ func requestProductImage(
 
 캐시를 싱글톤으로 구현하여 어디서든 접근할 수 있도록 구현하였다.
 
-```swfit
+```swift
 class ImageCacheManager {
     static let shared = NSCache<NSString, UIImage>()
     private init() {}
